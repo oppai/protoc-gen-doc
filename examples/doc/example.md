@@ -1,11 +1,12 @@
 # Protocol Documentation
-<a name="top"/>
+<a name="top"></a>
 
 ## Table of Contents
 
 - [Booking.proto](#Booking.proto)
     - [Booking](#com.example.Booking)
     - [BookingStatus](#com.example.BookingStatus)
+    - [BookingStatusID](#com.example.BookingStatusID)
     - [EmptyBookingMessage](#com.example.EmptyBookingMessage)
   
   
@@ -37,7 +38,7 @@
 
 
 
-<a name="Booking.proto"/>
+<a name="Booking.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
 ## Booking.proto
@@ -47,7 +48,7 @@ This file is really just an example. The data model is completely
 fictional.
 
 
-<a name="com.example.Booking"/>
+<a name="com.example.Booking"></a>
 
 ### Booking
 Represents the booking of a vehicle.
@@ -68,7 +69,7 @@ Vehicles are some cool shit. But drive carefully!
 
 
 
-<a name="com.example.BookingStatus"/>
+<a name="com.example.BookingStatus"></a>
 
 ### BookingStatus
 Represents the status of a vehicle booking.
@@ -84,7 +85,22 @@ Represents the status of a vehicle booking.
 
 
 
-<a name="com.example.EmptyBookingMessage"/>
+<a name="com.example.BookingStatusID"></a>
+
+### BookingStatusID
+Represents the booking status ID.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [int32](#int32) |  | Unique booking status ID. |
+
+
+
+
+
+
+<a name="com.example.EmptyBookingMessage"></a>
 
 ### EmptyBookingMessage
 An empty message for testing
@@ -100,27 +116,28 @@ An empty message for testing
  
 
 
-<a name="com.example.BookingService"/>
+<a name="com.example.BookingService"></a>
 
 ### BookingService
 Service for handling vehicle bookings.
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| BookVehicle | [Booking](#com.example.Booking) | [BookingStatus](#com.example.Booking) | Used to book a vehicle. Pass in a Booking and a BookingStatus will be returned. |
+| BookVehicle | [Booking](#com.example.Booking) | [BookingStatus](#com.example.BookingStatus) | Used to book a vehicle. Pass in a Booking and a BookingStatus will be returned. |
+| BookingUpdates | [BookingStatusID](#com.example.BookingStatusID) | [BookingStatus](#com.example.BookingStatus) stream | Used to subscribe to updates of the BookingStatus. |
 
  
 
 
 
-<a name="Customer.proto"/>
+<a name="Customer.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
 ## Customer.proto
 This file has messages for describing a customer.
 
 
-<a name="com.example.Address"/>
+<a name="com.example.Address"></a>
 
 ### Address
 Represents a mail address.
@@ -140,7 +157,7 @@ Represents a mail address.
 
 
 
-<a name="com.example.Customer"/>
+<a name="com.example.Customer"></a>
 
 ### Customer
 Represents a customer.
@@ -170,14 +187,14 @@ Represents a customer.
 
 
 
-<a name="Vehicle.proto"/>
+<a name="Vehicle.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
 ## Vehicle.proto
 Messages describing manufacturers / vehicles.
 
 
-<a name="com.example.Manufacturer"/>
+<a name="com.example.Manufacturer"></a>
 
 ### Manufacturer
 Represents a manufacturer of cars.
@@ -195,7 +212,7 @@ Represents a manufacturer of cars.
 
 
 
-<a name="com.example.Model"/>
+<a name="com.example.Model"></a>
 
 ### Model
 Represents a vehicle model.
@@ -214,7 +231,7 @@ Represents a vehicle model.
 
 
 
-<a name="com.example.Vehicle"/>
+<a name="com.example.Vehicle"></a>
 
 ### Vehicle
 Represents a vehicle that can be hired.
@@ -240,7 +257,7 @@ Represents a vehicle that can be hired.
 
 
 
-<a name="com.example.Vehicle.Category"/>
+<a name="com.example.Vehicle.Category"></a>
 
 ### Vehicle.Category
 Represents a vehicle category. E.g. &#34;Sedan&#34; or &#34;Truck&#34;.
@@ -258,7 +275,7 @@ Represents a vehicle category. E.g. &#34;Sedan&#34; or &#34;Truck&#34;.
  
 
 
-<a name="com.example.Manufacturer.Category"/>
+<a name="com.example.Manufacturer.Category"></a>
 
 ### Manufacturer.Category
 Manufacturer category. A manufacturer may be either inhouse or external.
@@ -272,7 +289,7 @@ Manufacturer category. A manufacturer may be either inhouse or external.
  
 
 
-<a name="Vehicle.proto-extensions"/>
+<a name="Vehicle.proto-extensions"></a>
 
 ### File-level Extensions
 | Extension | Type | Base | Number | Description |

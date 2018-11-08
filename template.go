@@ -150,6 +150,7 @@ type MessageField struct {
 	Type         string `json:"type"`
 	LongType     string `json:"longType"`
 	FullType     string `json:"fullType"`
+	IsMap        bool   `json:"ismap"`
 	DefaultValue string `json:"defaultValue"`
 }
 
@@ -189,14 +190,16 @@ type Service struct {
 
 // ServiceMethod contains details about an individual method within a service.
 type ServiceMethod struct {
-	Name             string `json:"name"`
-	Description      string `json:"description"`
-	RequestType      string `json:"requestType"`
-	RequestLongType  string `json:"requestLongType"`
-	RequestFullType  string `json:"requestFullType"`
-	ResponseType     string `json:"responseType"`
-	ResponseLongType string `json:"responseLongType"`
-	ResponseFullType string `json:"responseFullType"`
+	Name              string `json:"name"`
+	Description       string `json:"description"`
+	RequestType       string `json:"requestType"`
+	RequestLongType   string `json:"requestLongType"`
+	RequestFullType   string `json:"requestFullType"`
+	RequestStreaming  bool   `json:"requestStreaming"`
+	ResponseType      string `json:"responseType"`
+	ResponseLongType  string `json:"responseLongType"`
+	ResponseFullType  string `json:"responseFullType"`
+	ResponseStreaming bool   `json:"responseStreaming"`
 }
 
 // ScalarValue contains information about scalar value types in protobuf. The common use case for this type is to know
@@ -290,7 +293,7 @@ func parseMessageExtension(pe *protokit.ExtensionDescriptor) *MessageExtension {
 func parseMessageField(pf *protokit.FieldDescriptor) *MessageField {
 	t, lt, ft := parseType(pf)
 
-	return &MessageField{
+	m := &MessageField{
 		Name:         pf.GetName(),
 		Description:  description(pf.GetComments().String()),
 		Label:        labelName(pf.GetLabel(), pf.IsProto3()),
@@ -299,6 +302,19 @@ func parseMessageField(pf *protokit.FieldDescriptor) *MessageField {
 		FullType:     ft,
 		DefaultValue: pf.GetDefaultValue(),
 	}
+
+	// Check if this is a map.
+	// See https://github.com/golang/protobuf/blob/master/protoc-gen-go/descriptor/descriptor.pb.go#L1556
+	// for more information
+	if m.Label == "repeated" &&
+		strings.Contains(m.LongType, ".") &&
+		strings.HasSuffix(m.Type, "Entry") &&
+		strings.HasSuffix(m.LongType, "Entry") &&
+		strings.HasSuffix(m.FullType, "Entry") {
+		m.IsMap = true
+	}
+
+	return m
 }
 
 func parseService(ps *protokit.ServiceDescriptor) *Service {
@@ -318,14 +334,16 @@ func parseService(ps *protokit.ServiceDescriptor) *Service {
 
 func parseServiceMethod(pm *protokit.MethodDescriptor) *ServiceMethod {
 	return &ServiceMethod{
-		Name:             pm.GetName(),
-		Description:      description(pm.GetComments().String()),
-		RequestType:      baseName(pm.GetInputType()),
-		RequestLongType:  strings.TrimPrefix(pm.GetInputType(), "."+pm.GetPackage()+"."),
-		RequestFullType:  strings.TrimPrefix(pm.GetInputType(), "."),
-		ResponseType:     baseName(pm.GetOutputType()),
-		ResponseLongType: strings.TrimPrefix(pm.GetOutputType(), "."+pm.GetPackage()+"."),
-		ResponseFullType: strings.TrimPrefix(pm.GetOutputType(), "."),
+		Name:              pm.GetName(),
+		Description:       description(pm.GetComments().String()),
+		RequestType:       baseName(pm.GetInputType()),
+		RequestLongType:   strings.TrimPrefix(pm.GetInputType(), "."+pm.GetPackage()+"."),
+		RequestFullType:   strings.TrimPrefix(pm.GetInputType(), "."),
+		RequestStreaming:  pm.GetClientStreaming(),
+		ResponseType:      baseName(pm.GetOutputType()),
+		ResponseLongType:  strings.TrimPrefix(pm.GetOutputType(), "."+pm.GetPackage()+"."),
+		ResponseFullType:  strings.TrimPrefix(pm.GetOutputType(), "."),
+		ResponseStreaming: pm.GetServerStreaming(),
 	}
 }
 

@@ -4,7 +4,7 @@
   <head>
     <title>Protocol Documentation</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic"/>
     <style>
       body {
         width: 60em;
@@ -304,8 +304,8 @@
             {{range .Methods}}
               <tr>
                 <td>{{.Name}}</td>
-                <td><a href="#{{.RequestFullType}}">{{.RequestLongType}}</a></td>
-                <td><a href="#{{.ResponseFullType}}">{{.ResponseLongType}}</a></td>
+                <td><a href="#{{.RequestFullType}}">{{.RequestLongType}}</a>{{if .RequestStreaming}} stream{{end}}</td>
+                <td><a href="#{{.ResponseFullType}}">{{.ResponseLongType}}</a>{{if .ResponseStreaming}} stream{{end}}</td>
                 <td><p>{{.Description}}</p></td>
               </tr>
             {{end}}
